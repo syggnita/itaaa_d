@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>azhr_nit — Bio, Album, Catatan</title>
+  <meta name="description" content="Bio elegan dengan galeri album, catatan harian, about & sosmed, plus album privat dengan PIN." />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0d12; --bg-soft:#0f131a; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.10);
+      --fg:#f3f4f6; --muted:#a8b0bf; --accent:#c084fc; --accent2:#60a5fa; --radius:18px; --shadow:0 10px 40px rgba(0,0,0,.35)
+    }
+    @media (prefers-color-scheme: light){
+      :root{--bg:#f6f7fb;--bg-soft:#ffffff;--card:rgba(255,255,255,.8);--stroke:#e9ecf2;--fg:#0f1220;--muted:#6b7280;--shadow:0 12px 40px rgba(22,25,36,.06)}
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0;color:var(--fg);
+      font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 90% -10%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(1200px 700px at -10% 110%, rgba(192,132,252,.18), transparent 60%),
+        linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 100%);
+      overflow-x:hidden;
+    }
+    .container{max-width:1080px;margin:auto}
+    .glass{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:saturate(140%) blur(14px)}
+    .hero{position:relative;padding:64px 20px 28px;overflow:hidden;isolation:isolate}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 16px;border-radius:999px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;border:1px solid var(--stroke)}
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .name{font-weight:700}.handle{font:600 .9rem Nunito;color:var(--muted)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:8px 14px;border-radius:999px;border:1px solid var(--stroke);cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));color:var(--fg);font-weight:600;transition:transform .06s,border-color .2s,box-shadow .2s}
+    .tab:hover{transform:translateY(1px)}
+    .tab[aria-selected="true"]{border-color:color-mix(in srgb, var(--accent) 55%, var(--stroke));box-shadow:0 8px 24px rgba(96,165,250,.25), inset 0 -1px 0 rgba(255,255,255,.05)}
+    .hero-head{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;border-radius:var(--radius)}
+    .title{font-size:clamp(1.35rem,2.4vw,1.8rem);font-weight:700;letter-spacing:.2px;background:linear-gradient(90deg,var(--fg), color-mix(in srgb, var(--accent) 35%, var(--fg)));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .subtitle{color:var(--muted);font:600 .95rem Nunito}
+    .stripe{position:absolute;inset:auto -20% 0 -20%;height:1px;opacity:.35;translate:0 12px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);filter:blur(.6px);animation:glide 9s linear infinite;z-index:-1}
+    @keyframes glide{0%{transform:translateX(-30%)}100%{transform:translateX(30%)}}
+    main{padding:24px 20px 60px}
+    .section{display:grid;gap:14px}
+    .section-title{margin:0;font-size:clamp(1.1rem,1.8vw,1.35rem);font-weight:700}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{padding:7px 12px;border-radius:999px;border:1px solid var(--stroke);cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));font:600 .9rem Nunito;color:var(--fg)}
+    .chip.active{outline:2px solid color-mix(in srgb, var(--accent) 50%, transparent)}
+    .gallery{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+    .tile{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--stroke);aspect-ratio:1/1;background:#0f0f11;transition:transform .25s, box-shadow .25s, border-color .25s;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+    .tile:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 35%, var(--stroke))}
+    .tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease;will-change:transform}
+    .tile:hover img{transform:scale(1.03)}
+    .badge{position:absolute;left:8px;top:8px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.42);color:#fff;font:600 .7rem Nunito;letter-spacing:.2px}
+    .lock{position:absolute;right:8px;top:8px;padding:4px 8px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font:700 .7rem Nunito}
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:50}
+    .lightbox.open{display:flex}.viewer{max-width:min(92vw,1100px);max-height:86vh;position:relative}
+    .viewer img{width:100%;height:100%;object-fit:contain;border-radius:14px;background:#000}
+    .ctrl{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;display:grid;place-items:center;cursor:pointer;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25)}
+    .ctrl.prev{left:-56px}.ctrl.next{right:-56px}.ctrl.close{top:-14px;right:-14px;transform:none}
+    @media (max-width:760px){.ctrl.prev{left:8px}.ctrl.next{right:8px}}
+    .note-form{display:grid;gap:10px}
+    textarea{width:100%;min-height:120px;border-radius:14px;padding:12px;resize:vertical;border:1px solid var(--stroke);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));color:var(--fg);font:500 1rem Nunito}
+    .btn{appearance:none;border:1px solid var(--stroke);border-radius:12px;padding:10px 14px;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.05));color:var(--fg);font-weight:700;letter-spacing:.2px;box-shadow:var(--shadow);transition:transform .06s,border-color .2s}
+    .btn:active{transform:translateY(1px)} .btn.primary{border-color:color-mix(in srgb, var(--accent) 45%, var(--stroke))}
+    .notes{display:grid;gap:12px}
+    .note{padding:12px;border:1px solid var(--stroke);border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03))}
+    .note small{color:var(--muted);font:600 .85rem Nunito}.note .actions{display:flex;gap:8px;margin-top:8px}
+    .about{display:grid;gap:14px}
+    .link-row{display:flex;gap:10px;flex-wrap:wrap}
+    .link{padding:10px 14px;border-radius:12px;border:1px solid var(--stroke);text-decoration:none;color:var(--fg);font-weight:700}
+    .pin-wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .pin-wrap input{padding:10px 12px;border-radius:10px;border:1px solid var(--stroke);background:var(--card);color:var(--fg)}
+    .fade{animation:fade .45s ease both}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .reveal{opacity:0;transform:translateY(12px)} .reveal.show{opacity:1;transform:none;transition:opacity .6s,transform .6s}
+    footer{color:var(--muted);text-align:center;padding:36px 16px}
+  </style>
+</head>
+<body>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="container">
+      <div class="glass nav">
+        <div class="brand">
+          <div class="avatar"><img src="images/profile.jpg" alt="Foto profil"></div>
+          <div><div class="name">azhr_nit</div><div class="handle">@azhr_nit • Bio & Album</div></div>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Navigasi">
+          <button class="tab" role="tab" aria-selected="true" data-target="albums">Album</button>
+          <button class="tab" role="tab" aria-selected="false" data-target="notes">Catatan</button>
+          <button class="tab" role="tab" aria-selected="false" data-target="about">About</button>
+        </div>
+      </div>
+      <div class="glass hero-head fade">
+        <div>
+          <div class="title">Kisah kecil, gambar besar.</div>
+          <div class="subtitle">Galeri elegan, catatan harian, dan album privat dengan PIN.</div>
+        </div>
+        <div class="pin-wrap">
+          <input id="pin-global" type="password" inputmode="numeric" maxlength="8" placeholder="Set/masukkan PIN…" />
+          <button class="btn" id="set-pin">Set PIN</button>
+          <button class="btn" id="clear-pin" title="Hapus PIN tersimpan">Clear PIN</button>
+        </div>
+      </div>
+    </div>
+    <div class="stripe" aria-hidden="true"></div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="container">
+    <!-- ALBUMS -->
+    <section id="albums" class="section" role="tabpanel" aria-labelledby="tab-albums">
+      <div class="glass" style="padding:18px">
+        <h2 class="section-title">Album</h2>
+
+        <!-- Upload lokal -->
+        <div class="fade" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <input id="uploader" type="file" accept="image/*" multiple style="display:none">
+          <button class="btn primary" id="btn-upload">Unggah Foto (Lokal)</button>
+          <small class="subtitle">Foto tersimpan di perangkat (localStorage), tidak ke server.</small>
+        </div>
+
+        <div class="chips" id="album-chips"></div>
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </section>
+
+    <!-- NOTES -->
+    <section id="notes" class="section" hidden role="tabpanel" aria-labelledby="tab-notes">
+      <div class="glass" style="padding:18px">
+        <h2 class="section-title">Catatan Harian</h2>
+        <form class="note-form" id="note-form">
+          <textarea id="note-text" placeholder="Tulis catatan singkat..."></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn primary" type="submit">Simpan</button>
+            <button class="btn" type="button" id="export-notes">Unduh .txt</button>
+            <button class="btn" type="button" id="clear-notes">Hapus Semua</button>
+          </div>
+        </form>
+        <div class="notes" id="notes-list"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section" hidden role="tabpanel" aria-labelledby="tab-about">
+      <div class="glass" style="padding:18px">
+        <h2 class="section-title">About</h2>
+        <div class="about">
+          <p class="subtitle">Halo! Saya <b>Azhar</b>. Ini halaman bio sederhana untuk berbagi momen & catatan. Desain dibuat ringan, nyaman dilihat, dan bisa dibuka cepat dari bio IG/TikTok.</p>
+          <div>
+            <div class="subtitle" style="margin-bottom:8px">Temui saya di:</div>
+            <div class="link-row">
+              <a class="link" href="https://instagram.com/azhr_nit" target="_blank" rel="noopener">Instagram</a>
+              <a class="link" href="https://tiktok.com/@azhr_nit" target="_blank" rel="noopener">TikTok</a>
+              <a class="link" href="mailto:azhar@example.com">Email</a>
+              <a class="link" href="https://github.com/syggnita/Azhar_nit" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+          <div>
+            <div class="subtitle" style="margin-bottom:8px">Catatan teknis:</div>
+            <ul class="subtitle" style="padding-left:18px">
+              <li>Gambar statis di folder <code>images/</code> (GitHub).</li>
+              <li>Unggahan Lokal disimpan sebagai data-URL di browser (bisa dihapus lewat “Hapus Album Lokal” di chip).</li>
+              <li>Album privat dapat dikunci dengan PIN (diset di bagian atas).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="viewer">
+      <img id="lb-img" alt="">
+      <div class="ctrl close" id="lb-close" title="Tutup">✕</div>
+      <div class="ctrl prev" id="lb-prev" title="Sebelumnya">❮</div>
+      <div class="ctrl next" id="lb-next" title="Berikutnya">❯</div>
+    </div>
+  </div>
+
+  <footer>© <span id="year"></span> azhr_nit · dibuat rapi & elegan.</footer>
+
+  <script>
+    /* ---------------------- KONFIGURASI ---------------------- */
+    // 1) Album default (dari folder images/). Bisa tambah/ubah.
+    const baseAlbums = [
+      {
+        name: "Kita",
+        photos: [
+          { src: "images/kita-1.jpg", alt: "Bergandengan" },
+          { src: "images/kita-2.jpg", alt: "Selfie berdua" },
+          { src: "images/kita-3.jpg", alt: "Tertawa" }
+        ]
+      },
+      {
+        name: "Kenangan (Privat)",   // contoh album privat
+        locked: true,                 // true = butuh PIN
+        photos: [
+          { src: "images/priv-1.jpg", alt: "Momen privat 1" },
+          { src: "images/priv-2.jpg", alt: "Momen privat 2" }
+        ]
+      },
+      {
+        name: "Random",
+        photos: [
+          { src: "images/random-1.jpg", alt: "Random 1" },
+          { src: "images/random-2.jpg", alt: "Random 2" },
+          { src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop", alt: "Placeholder kota" }
+        ]
+      }
+    ];
+    // 2) Nama album untuk unggahan lokal
+    const LOCAL_ALBUM_NAME = "Unggahan Lokal";
+    // -----------------------------------------------------------
+
+    // Helpers
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs
+    const tabs = $$('.tab');
+    tabs.forEach(b=>{
+      b.addEventListener('click', ()=>{
+        tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+        b.setAttribute('aria-selected','true');
+        const id = b.dataset.target;
+        ['albums','notes','about'].forEach(k=>{
+          const el = document.getElementById(k); el.hidden = (k!==id);
+          if(!el.hidden) el.querySelectorAll('.reveal').forEach(x=>x.classList.remove('show'));
+        });
+        scrollReveal();
+      });
+    });
+
+    /* ---------- PIN Storage ---------- */
+    const PIN_KEY = '150825';
+    const getPIN = () => localStorage.getItem(PIN_KEY) || '';
+    const setPIN = (pin) => localStorage.setItem(PIN_KEY, pin);
+    const clearPIN = () => localStorage.removeItem(PIN_KEY);
+    $('#set-pin').onclick = ()=>{
+      const val = $('#pin-global').value.trim();
+      if(!val) return alert('Masukkan PIN (angka/teks pendek).');
+      setPIN(val); alert('PIN disimpan.'); $('#pin-global').value='';
+    };
+    $('#clear-pin').onclick = ()=>{ clearPIN(); alert('PIN dihapus.'); };
+
+    /* ---------- Album data (base + local uploads) ---------- */
+    const LOCAL_KEY = 'azhr_local_photos_v1'; // simpan dataURL
+    const readLocal = () => JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+    const writeLocal = (arr) => localStorage.setItem(LOCAL_KEY, JSON.stringify(arr));
+
+    function getAlbums(){
+      const localPhotos = readLocal().map(src=>({src, alt:'Unggahan'}));
+      const localAlbum = { name: LOCAL_ALBUM_NAME, photos: localPhotos };
+      return [localAlbum, ...baseAlbums];
+    }
+
+    // Chips & Gallery
+    let active = getAlbums()[0]?.name || '';
+    let flat = [];
+    function renderChips(){
+      const wrap = $('#album-chips'); wrap.innerHTML='';
+      const albums = getAlbums();
+      albums.forEach(a=>{
+        const chip = document.createElement('button');
+        chip.className = 'chip' + (a.name===active?' active':'');
+        chip.textContent = a.name;
+        chip.title = a.locked ? 'Album terkunci PIN' : '';
+        chip.addEventListener('click', ()=>{ active=a.name; renderChips(); renderGallery(); });
+        wrap.appendChild(chip);
+      });
+
+      // Tombol untuk bersihkan album lokal bila ada
+      if(readLocal().length){
+        const del = document.createElement('button');
+        del.className='chip'; del.textContent='Hapus Album Lokal';
+        del.onclick=()=>{ if(confirm('Hapus semua unggahan lokal di perangkat ini?')){ writeLocal([]); renderChips(); renderGallery(); } };
+        wrap.appendChild(del);
+      }
+    }
+
+    function renderGallery(){
+      const g = $('#gallery'); g.innerHTML='';
+      const albums = getAlbums();
+      const album = albums.find(a=>a.name===active) || albums[0];
+      // Jika album dikunci, cek PIN
+      if(album.locked){
+        const pin = getPIN();
+        if(!pin){
+          const locked = document.createElement('div');
+          locked.className='fade'; locked.innerHTML = `
+            <div class="subtitle" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              Album ini privat. Masukkan/set PIN di bagian atas untuk membuka.
+            </div>`;
+          g.appendChild(locked);
+          return;
+        }
+      }
+
+      flat = album?.photos || [];
+      if(!flat.length){
+        const empty = document.createElement('div');
+        empty.className = 'subtitle'; empty.textContent = 'Belum ada foto di album ini.';
+        g.appendChild(empty); return;
+      }
+
+      flat.forEach((p,i)=>{
+        const card = document.createElement('div'); card.className='tile reveal';
+        const img = document.createElement('img');
+        img.loading='lazy'; img.src=p.src; img.alt=p.alt||('Foto '+(i+1));
+        img.onerror=()=>{ img.style.filter='grayscale(100%)'; };
+        const b = document.createElement('div'); b.className='badge'; b.textContent=album.name;
+        card.appendChild(img); card.appendChild(b);
+        if(album.locked){ const lk=document.createElement('div'); lk.className='lock'; lk.textContent='🔒'; card.appendChild(lk); }
+        card.addEventListener('click', ()=>openLightbox(i));
+        g.appendChild(card);
+      });
+      scrollReveal();
+    }
+
+    // Lightbox
+    const lb = $('#lightbox'), lbImg = $('#lb-img'); let idx = 0;
+    function openLightbox(i){ idx=i; lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); setLB(); }
+    function setLB(){ const p=flat[idx]; if(!p) return; lbImg.src=p.src; lbImg.alt=p.alt||'Foto'; }
+    function closeLB(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); }
+    $('#lb-close').onclick=closeLB; $('#lb-prev').onclick=()=>{ idx=(idx-1+flat.length)%flat.length; setLB(); }; $('#lb-next').onclick=()=>{ idx=(idx+1)%flat.length; setLB(); };
+    lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
+    document.addEventListener('keydown', e=>{ if(!lb.classList.contains('open')) return; if(e.key==='Escape') closeLB(); if(e.key==='ArrowLeft') $('#lb-prev').click(); if(e.key==='ArrowRight') $('#lb-next').click(); });
+
+    // Notes
+    const NOTE_KEY='azhr_notes_v3';
+    const listEl = $('#notes-list');
+    const readNotes = () => JSON.parse(localStorage.getItem(NOTE_KEY)||'[]');
+    const writeNotes = (n) => localStorage.setItem(NOTE_KEY, JSON.stringify(n));
+    function renderNotes(){
+      const data=readNotes().sort((a,b)=>b.time-a.time); listEl.innerHTML='';
+      if(!data.length){ const empty=document.createElement('div'); empty.className='note'; empty.innerHTML='<small>Belum ada catatan. Tulis di atas lalu <b>Simpan</b>.</small>'; listEl.appendChild(empty); return; }
+      for(const n of data){
+        const el=document.createElement('div'); el.className='note reveal';
+        const d=new Date(n.time);
+        el.innerHTML = `<small>${d.toLocaleDateString('id-ID',{weekday:'long', day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'})}</small>
+                        <div style="white-space:pre-wrap;margin-top:6px">${escapeHTML(n.text)}</div>`;
+        const act=document.createElement('div'); act.className='actions';
+        const del=document.createElement('button'); del.className='btn'; del.textContent='Hapus';
+        del.onclick=()=>{ writeNotes(readNotes().filter(x=>x.id!==n.id)); renderNotes(); };
+        act.appendChild(del); el.appendChild(act); listEl.appendChild(el);
+      }
+      scrollReveal();
+    }
+    function escapeHTML(s){return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+    $('#note-form').addEventListener('submit', e=>{
+      e.preventDefault();
+      const val = $('#note-text').value.trim(); if(!val) return;
+      const next = readNotes(); next.push({id:crypto.randomUUID(), time:Date.now(), text:val});
+      writeNotes(next); $('#note-text').value=''; renderNotes();
+    });
+    $('#clear-notes').onclick=()=>{ if(confirm('Hapus semua catatan?')){ localStorage.removeItem(NOTE_KEY); renderNotes(); } };
+    $('#export-notes').onclick=()=>{
+      const lines = readNotes().sort((a,b)=>a.time-b.time).map(n=>{
+        const t=new Date(n.time).toLocaleString('id-ID'); return `[${t}] ${n.text}`;
+      }).join('\n\n') || 'Belum ada catatan.'; const blob = new Blob([lines],{type:'text/plain'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='catatan-harian.txt'; a.click(); URL.revokeObjectURL(a.href);
+    };
+
+    // Upload lokal (dataURL)
+    $('#btn-upload').onclick = ()=>$('#uploader').click();
+    $('#uploader').addEventListener('change', async (e)=>{
+      const files = Array.from(e.target.files||[]);
+      if(!files.length) return;
+      // Baca maksimal ~1.5MB per gambar agar tidak membebani localStorage
+      const maxSide = 1600;
+      for(const f of files){
+        if(!f.type.startsWith('image/')) continue;
+        const data = await fileToResizedDataURL(f, maxSide);
+        const cur = readLocal(); cur.push(data); writeLocal(cur);
+      }
+      active = LOCAL_ALBUM_NAME; renderChips(); renderGallery();
+      e.target.value='';
+    });
+
+    async function fileToResizedDataURL(file, maxSide=1600){
+      const img = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(file); });
+      const {width, height} = img; const scale = Math.min(1, maxSide/Math.max(width,height));
+      const w = Math.round(width*scale), h = Math.round(height*scale);
+      const c = document.createElement('canvas'); c.width=w; c.height=h; const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+      const mime = (file.type==='image/png')?'image/png':'image/jpeg';
+      const q = mime==='image/jpeg'?0.85:1.0; const out = c.toDataURL(mime,q); URL.revokeObjectURL(img.src); return out;
+    }
+
+    // Scroll reveal
+    function scrollReveal(){
+      const els = $$('.reveal:not(.show)');
+      const io = new IntersectionObserver((entries,obs)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); obs.unobserve(e.target);} });
+      }, { threshold:.08 });
+      els.forEach(el=>io.observe(el));
+    }
+
+    // Init
+    document.getElementById('year').textContent = new Date().getFullYear();
+    renderChips(); renderGallery(); renderNotes();
+  </script>
+</body>
+            </html>
